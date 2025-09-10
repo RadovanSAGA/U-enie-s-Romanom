@@ -32,5 +32,3 @@ export function TweetBox({ onAddTweet }: Props) {
     </div>
   )
 }
-
-<Ahoj>
