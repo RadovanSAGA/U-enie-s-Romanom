@@ -1,0 +1,31 @@
+import { useState } from 'react';
+import { TweetBox } from './components/TweetBox';
+
+function App() {
+  const [tweets, setTweets] = useState<string[]>([]);
+
+  const handleAddTweet = (text: string) => {
+    setTweets([...tweets, text]);
+  };
+  
+  const handleDeleteTweet = (index: number) =>{
+    const noveTweety = tweets.filter((_, i) => i !== index);
+    setTweets(noveTweety)
+  }
+
+  return (
+    <div>
+      {/* Komponent na písanie tweetu */}
+      <TweetBox onAddTweet={handleAddTweet} />
+
+      {/* Výpis všetkých tweetov ako zoznam */}
+      <ul>
+        {tweets.map((tweet, index) => (
+          <li key={index}>{tweet}</li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+export default App;
