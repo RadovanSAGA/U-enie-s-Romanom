@@ -3,11 +3,38 @@ import { useTweetStore } from '../store/tweetStore'
 
 export const TweetBox = () => {
   const [text, setText] = useState('')
-  const { tweets, addTweet, deleteTweet, deleteAll } = useTweetStore()
+  const [editingIndex, setEditingIndex] = useState<number | null>(null)
+  const [editText, setEditText] = useState('')
+  
+  const { tweets, addTweet, deleteTweet, deleteAll, editTweet } = useTweetStore()
 
   const handleSubmit = () => {
     addTweet(text)
     setText('')
+  }
+
+  const handleEditStart = (index: number, currentText: string) => {
+    setEditingIndex(index)
+    setEditText(currentText)
+  }
+
+  const handleEditSave = (index: number) => {
+    editTweet(index, editText)
+    setEditingIndex(null)
+    setEditText('')
+  }
+
+  const handleEditCancel = () => {
+    setEditingIndex(null)
+    setEditText('')
+  }
+
+  const handleTweetDelete = (index: number) => {
+    deleteTweet(index)
+  }
+
+  const handleDeleteAll = () => {
+    deleteAll()
   }
 
   return (
@@ -39,15 +66,28 @@ export const TweetBox = () => {
 
       {tweets.length === 0 && <p>Zatiaľ žiadne nové tweety</p>}
 
-      <button onClick={deleteAll}>Vymazať všetko</button>
+      <button onClick={handleDeleteAll}>Vymazať všetko</button>
 
       {tweets.map((tweet, index) => (
         <div key={index}>
-          <span>{tweet}</span>
-          <button onClick={() => deleteTweet(index)}>Zmazať</button>
+          {editingIndex === index ? (
+            <div>
+              <textarea
+                value={editText}
+                onChange={(e) => setEditText(e.target.value)}
+              />
+              <button onClick={() => handleEditSave(index)}>Uložiť</button>
+              <button onClick={handleEditCancel}>Zrušiť</button>
+            </div>
+          ) : (
+            <div>
+              <span>{tweet}</span>
+              <button onClick={() => handleEditStart(index, tweet)}>Upraviť</button>
+              <button onClick={() => handleTweetDelete(index)}>Zmazať</button>
+            </div>
+          )}
         </div>
       ))}
     </div>
   )
 }
-
