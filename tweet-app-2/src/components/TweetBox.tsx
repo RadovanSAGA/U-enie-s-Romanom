@@ -13,9 +13,27 @@ export const TweetBox = () => {
     setText('')
   }
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter') {
+      if (e.shiftKey) {
+        return
+      }
+      e.preventDefault()
+      handleSubmit()
+    }
+  }
+
+  const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setText(e.target.value)
+  }
+
   const handleEditStart = (index: number, currentText: string) => {
     setEditingIndex(index)
     setEditText(currentText)
+  }
+
+  const handleEditTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setEditText(e.target.value)
   }
 
   const handleEditSave = (index: number) => {
@@ -41,16 +59,8 @@ export const TweetBox = () => {
     <div>
       <textarea
         value={text}
-        onChange={(e) => setText(e.target.value)}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter') {
-            if (e.shiftKey) {
-              return
-            }
-            e.preventDefault()
-            handleSubmit()
-          }
-        }}
+        onChange={handleTextChange}
+        onKeyDown={handleKeyDown}
       />
 
       <p style={{ color: text.length > 280 ? 'red' : 'grey' }}>
@@ -74,7 +84,7 @@ export const TweetBox = () => {
             <div>
               <textarea
                 value={editText}
-                onChange={(e) => setEditText(e.target.value)}
+                onChange={handleEditTextChange}
               />
               <button onClick={() => handleEditSave(index)}>Uložiť</button>
               <button onClick={handleEditCancel}>Zrušiť</button>
